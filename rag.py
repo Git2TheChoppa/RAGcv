@@ -7,21 +7,6 @@ def _weight_mean_color(graph, src, dst, n):
     """Callback to handle merging nodes by recomputing mean color.
 
     The method expects that the mean color of `dst` is already computed.
-
-    Parameters
-    ----------
-    graph : RAG
-        The graph under consideration.
-    src, dst : int
-        The vertices in `graph` to be merged.
-    n : int
-        A neighbor of `src` or `dst` or both.
-
-    Returns
-    -------
-    data : dict
-        A dictionary with the `"weight"` attribute set as the absolute
-        difference of the mean color between node `dst` and `n`.
     """
 
     diff = graph.node[dst]['mean color'] - graph.node[n]['mean color']
@@ -33,14 +18,8 @@ def merge_mean_color(graph, src, dst):
     """Callback called before merging two nodes of a mean color distance graph.
 
     This method computes the mean color of `dst`.
-
-    Parameters
-    ----------
-    graph : RAG
-        The graph under consideration.
-    src, dst : int
-        The vertices in `graph` to be merged.
     """
+    
     graph.node[dst]['total color'] += graph.node[src]['total color']
     graph.node[dst]['pixel count'] += graph.node[src]['pixel count']
     graph.node[dst]['mean color'] = (graph.node[dst]['total color'] /
@@ -48,6 +27,7 @@ def merge_mean_color(graph, src, dst):
 
 import cv2
 img = cv2.imread('coffee2.jpg')
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # Changes color back to RGB.
 labels = segmentation.slic(img, compactness=30, n_segments=400)
 g = graph.rag_mean_color(img, labels)
 
